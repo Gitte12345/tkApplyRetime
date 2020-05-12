@@ -83,6 +83,7 @@ def cRetimeFile(action, type, *args):
 
 
 	if action == 'apply': 
+		cApplySceneTimeWarp('apply')
 		cmds.select(clear=1) 
 		numKeys = cmds.keyframe(timewarp, kc=1, q=1) 
 		timeLast = cmds.keyframe("timewarp", q=True)[-1] 
@@ -96,16 +97,21 @@ def cRetimeFile(action, type, *args):
 		f=open(tkFileList[0], "r")
 		if f.mode == 'r':
 			retimeValues = f.read().split()
-			for value in range (0, len(retimeValues), 2):
-				time = float(retimeValues[value])
-				value = float(retimeValues[(value +1)])
+			for retValue in range (0, len(retimeValues), 2):
+				time = float(retimeValues[retValue])
+				value = float(retimeValues[(retValue +1)])
 				print time
 				print value
 				if (type == 'float'):
+					print 'float'
 					cmds.setKeyframe(timewarp, t=time, v=value)
 				if (type == 'int'):
-					intValue = int(round(value))
-					cmds.setKeyframe(timewarp, t=time, v=intValue)
+					print 'int'
+					intFrame = int(round(time,0))
+					intValue = int(round(value,0))
+					print intValue
+					print 'intValue:'
+					cmds.setKeyframe(timewarp, t=intFrame, v=intValue)
 
 			cmds.cutKey('timewarp', time=(timeFirst,timeFirst))
 
