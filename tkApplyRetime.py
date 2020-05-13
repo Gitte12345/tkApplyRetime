@@ -26,7 +26,7 @@ import maya.cmds as cmds
 import maya.mel as mel
 from functools import partial 
 
-ver = 0.1
+ver = 0.2
 
 colDarkGrey			= [0.1, 0.1, 0.1]
 colSilverLight 		= [0.39, 0.46, 0.50]
@@ -88,33 +88,32 @@ def cRetimeFile(action, type, *args):
 		numKeys = cmds.keyframe(timewarp, kc=1, q=1) 
 		timeLast = cmds.keyframe("timewarp", q=True)[-1] 
 		timeFirst =	cmds.keyframe("timewarp", q=True)[0] 
+		cmds.setKeyframe(timewarp, t=-1000, v=-1000)
 		cmds.cutKey('timewarp',	time=(timeLast,timeLast)) 
-		print 'timeFirst:' 
-		print timeFirst 
-		print'timeLast:' 
-		print timeLast
-
+		cmds.cutKey('timewarp', time=(timeFirst,timeFirst))
+		
 		f=open(tkFileList[0], "r")
 		if f.mode == 'r':
 			retimeValues = f.read().split()
 			for retValue in range (0, len(retimeValues), 2):
 				time = float(retimeValues[retValue])
 				value = float(retimeValues[(retValue +1)])
-				print time
-				print value
+				# print time
+				# print value
 				if (type == 'float'):
-					print 'float'
+					# print 'float'
 					cmds.setKeyframe(timewarp, t=time, v=value)
 				if (type == 'int'):
-					print 'int'
+					# print 'int'
 					intFrame = int(round(time,0))
 					intValue = int(round(value,0))
-					print intValue
-					print 'intValue:'
+					# print intValue
+					# print 'intValue:'
 					cmds.setKeyframe(timewarp, t=intFrame, v=intValue)
 
-			cmds.cutKey('timewarp', time=(timeFirst,timeFirst))
-
+			
+		cmds.cutKey('timewarp', time=(-1000,-1000))
+		
 		cmds.select(timewarp, r=1)
 		cmds.keyTangent(itt='linear', ott='linear')
 
